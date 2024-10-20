@@ -10,7 +10,7 @@ Run 'make clean all' to compile and generate target code
 
 ## Caution!!
 
-The current version only targeted for the x86-64 CPU architecture.
+The current version only targeted to the x86-64 CPU architecture.
 For Arm64, you should rewrite source code in the graph.cc:
 
 ```c++
