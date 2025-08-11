@@ -82,16 +82,23 @@ bool create_json(json &v, const ListLib &proc, const ListLib &libs) {
     }
     string tenant = itenant->second;
     string domain = idomain->second;
-    char hostname[HOST_NAME_MAX];
-    if (gethostname(hostname, sizeof(hostname)) < 0) {
-        fprintf(stderr, "failed to find hostname");
-        return false;
+    auto ihostname = properties.find("hostname");
+    string host;
+    if (ihostname == properties.cend()) {
+      char hostname[HOST_NAME_MAX];
+      if (gethostname(hostname, sizeof(hostname)) < 0) {
+          fprintf(stderr, "failed to find hostname");
+          return false;
+      }
+      host = hostname;
+    } else {
+      host = ihostname->second;
     }
 
     // global properties
     v["tenant"] = tenant;
     v["domain"] = domain;
-    v["hostname"] = hostname;
+    v["hostname"] = host;
     auto ipublish = properties.find("publish");
     int publish = false;
     if (ipublish != properties.cend()) {
