@@ -40,8 +40,13 @@ bool upload_server(const Property &properties, const json &v, json &vres)
       h += iserverhost->second;
       curl_slist_append(slist1, h.c_str());
   }
-
+  Property::const_iterator iverifyhost = properties.find("verifyhost");
+  bool bcheck = (iverifyhost == properties.cend()) ? false : (iverifyhost->second == "true");
   hnd = curl_easy_init();
+  if (!bcheck) {
+    curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYPEER, 0L);
+    curl_easy_setopt(hnd, CURLOPT_SSL_VERIFYHOST, 0L);
+  }
   curl_easy_setopt(hnd, CURLOPT_BUFFERSIZE, 102400L);
   curl_easy_setopt(hnd, CURLOPT_URL, serverhost.c_str());
   curl_easy_setopt(hnd, CURLOPT_NOPROGRESS, 1L);
@@ -54,6 +59,7 @@ bool upload_server(const Property &properties, const json &v, json &vres)
   curl_easy_setopt(hnd, CURLOPT_SSH_KNOWNHOSTS, "/home/minos/.ssh/known_hosts");
   curl_easy_setopt(hnd, CURLOPT_FTP_SKIP_PASV_IP, 1L);
   curl_easy_setopt(hnd, CURLOPT_TCP_KEEPALIVE, 1L);
+  
 
   /* Here is a list of options the curl code used that cannot get generated
      as source easily. You may select to either not use them or implement
